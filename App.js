@@ -7,106 +7,66 @@
  */
 
 import React from 'react';
-import type {Node} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
   View,
 } from 'react-native';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const data = [
+  {
+    latitude: 22.9096899,
+    longitude: 88.3918931,
+  }
+];
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+const initialRegion = {
+  latitude: 22.9096899,
+  longitude: 88.3918931,
+}
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+const App = () => {
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <MapView
+        ref={c => (this.mapView = c)}
+          style={{flex: 1}}
+          provider={PROVIDER_GOOGLE}
+          minZoomLevel={6}
+          onMapReady={() => {
+              Platform.OS === 'ios' && this.mapView.animateToRegion(initialRegion, 0.8);
+        }}
+          onRegionChangeComplete={(region, isGesture) => {}}
+          showsUserLocation={true}
+          mapPadding={{
+            left:25,
+            right: 25
+          }}
+          zoomControlEnabled={true}
+          showsCompass={true}
+          compassOffset={{ x: 20, y: 350 }}
+      >
+      {
+        data.map((item, key) => {
+          return(
+            <Marker
+              key={key}
+                      coordinate={{
+                        latitude: parseFloat(item.latitude),
+                        longitude: parseFloat(item.longitude),
+                      }}
+                      anchor={{x:0.5, y:0.5}}
+                      zIndex={1000}
+            >
+              <View style={{backgroundColor: 'red', width: 25, height: 25, alignItems: 'center', justifyContent: 'center', borderRadius: 25/2}}>
+              </View>
+            </Marker>
+            
+          )
+        })
+      }
+
+      </MapView>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
