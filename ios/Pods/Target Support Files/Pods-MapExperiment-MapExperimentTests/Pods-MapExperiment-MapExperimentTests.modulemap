@@ -1,0 +1,6 @@
+module Pods_MapExperiment_MapExperimentTests {
+  umbrella header "Pods-MapExperiment-MapExperimentTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
